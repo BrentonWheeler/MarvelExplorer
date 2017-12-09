@@ -1,0 +1,41 @@
+Marvel API routes for reference
+
+path: /v1/public/characters, _______summary: Fetches lists of characters.
+path: /v1/public/characters/{characterId}, _______summary: Fetches a single character by id.
+path: /v1/public/characters/{characterId}/comics, _______summary: Fetches lists of comics filtered by a character id.
+path: /v1/public/characters/{characterId}/events, _______summary: Fetches lists of events filtered by a character id.
+path: /v1/public/characters/{characterId}/series, _______summary: Fetches lists of series filtered by a character id.
+path: /v1/public/characters/{characterId}/stories, _______summary: Fetches lists of stories filtered by a character id.
+path: /v1/public/comics, _______summary: Fetches lists of comics.
+path: /v1/public/comics/{comicId}, _______summary: Fetches a single comic by id.
+path: /v1/public/comics/{comicId}/characters, _______summary: Fetches lists of characters filtered by a comic id.
+path: /v1/public/comics/{comicId}/creators, _______summary: Fetches lists of creators filtered by a comic id.
+path: /v1/public/comics/{comicId}/events, _______summary: Fetches lists of events filtered by a comic id.
+path: /v1/public/comics/{comicId}/stories, _______summary: Fetches lists of stories filtered by a comic id.
+path: /v1/public/creators, _______summary: Fetches lists of creators.
+path: /v1/public/creators/{creatorId}, _______summary: Fetches a single creator by id.
+path: /v1/public/creators/{creatorId}/comics, _______summary: Fetches lists of comics filtered by a creator id.
+path: /v1/public/creators/{creatorId}/events, _______summary: Fetches lists of events filtered by a creator id.
+path: /v1/public/creators/{creatorId}/series, _______summary: Fetches lists of series filtered by a creator id.
+path: /v1/public/creators/{creatorId}/stories, _______summary: Fetches lists of stories filtered by a creator id.
+path: /v1/public/events, _______summary: Fetches lists of events.
+path: /v1/public/events/{eventId}, _______summary: Fetches a single event by id.
+path: /v1/public/events/{eventId}/characters, _______summary: Fetches lists of characters filtered by an event id.
+path: /v1/public/events/{eventId}/comics, _______summary: Fetches lists of comics filtered by an event id.
+path: /v1/public/events/{eventId}/creators, _______summary: Fetches lists of creators filtered by an event id.
+path: /v1/public/events/{eventId}/series, _______summary: Fetches lists of series filtered by an event id.
+path: /v1/public/events/{eventId}/stories, _______summary: Fetches lists of stories filtered by an event id.
+path: /v1/public/series, _______summary: Fetches lists of series.
+path: /v1/public/series/{seriesId}, _______summary: Fetches a single comic series by id.
+path: /v1/public/series/{seriesId}/characters, _______summary: Fetches lists of characters filtered by a series id.
+path: /v1/public/series/{seriesId}/comics, _______summary: Fetches lists of comics filtered by a series id.
+path: /v1/public/series/{seriesId}/creators, _______summary: Fetches lists of creators filtered by a series id.
+path: /v1/public/series/{seriesId}/events, _______summary: Fetches lists of events filtered by a series id.
+path: /v1/public/series/{seriesId}/stories, _______summary: Fetches lists of stories filtered by a series id.
+path: /v1/public/stories, _______summary: Fetches lists of stories.
+path: /v1/public/stories/{storyId}, _______summary: Fetches a single comic story by id.
+path: /v1/public/stories/{storyId}/characters, _______summary: Fetches lists of characters filtered by a story id.
+path: /v1/public/stories/{storyId}/comics, _______summary: Fetches lists of comics filtered by a story id.
+path: /v1/public/stories/{storyId}/creators, _______summary: Fetches lists of creators filtered by a story id.
+path: /v1/public/stories/{storyId}/events, _______summary: Fetches lists of events filtered by a story id.
+path: /v1/public/stories/{storyId}/series, _______summary: Fetches lists of series filtered by a story id.

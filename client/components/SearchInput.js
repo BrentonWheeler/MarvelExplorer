@@ -1,10 +1,14 @@
-//https://github.com/moroshko/react-autosuggest ~70% of code in this Component was taken from docs
+//https://github.com/moroshko/react-autosuggest ~60% of code in this Component was taken from docs
 import React, { Component } from "react";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 import styled from "styled-components";
 import Autosuggest from "react-autosuggest";
 import PropTypes from "prop-types";
 import axios from "axios";
 import marvelAPI from "../api/marvelAPI";
+import updateSearchValue from "../redux/actions/updateSearchValueAction";
+import updateSuggestedItems from "../redux/actions/updateSuggestedItemsAction";
 
 const SearchInputStyledDiv = styled.div`
     body {
@@ -76,7 +80,6 @@ class SearchInput extends Component {
 
         this.state = {
             suggestions: [],
-            loading: false,
             entityType: this.props.entityType,
             value: "",
             entityArray: [],
@@ -84,7 +87,12 @@ class SearchInput extends Component {
             delayedSearch: null
         };
 
-        if (this.props.entityType === "Comics" || this.props.entityType === "Series") {
+        // TODO: flip this statement
+        if (
+            this.props.entityType === "Comics" ||
+            this.props.entityType === "Series" ||
+            this.props.entityType === "Events"
+        ) {
             this.state.searchByValue = "title";
         } else {
             this.state.searchByValue = "name";
@@ -142,10 +150,14 @@ class SearchInput extends Component {
                 this.searchAPIForSuggestions(newValue);
             }, 700)
         });
-
         this.setState({
             value: newValue
         });
+
+        // Passing to redux store to use outside this component
+        this.props.updateSearchValue(newValue);
+
+        // TODO: Enable buttons here by styling
     }
 
     searchAPIForSuggestions (newValue) {
@@ -154,36 +166,36 @@ class SearchInput extends Component {
             this.state.cancelPreviousRequest();
         }
 
-        // Searching the api for suggestions if user given value is longer than 1 character
+        // Searching the api for suggestions if user given value is more than 0 characters
         if (newValue.length >= 1) {
             // Checking if current seach has been Cached to not unnecessarily draw from API
-            if (sessionStorage.getItem(this.state.entityType + newValue) !== null) {
-                this.setState({
-                    entityArray: JSON.parse(sessionStorage.getItem(this.state.entityType + newValue))
-                });
-            } else {
-                // Otherwise request auto suggestions from API and then cache them
-                let tempRequest = marvelAPI.getEntityStartingWith(this.state.entityType, newValue);
-                tempRequest.get
-                    .then(res => {
-                        console.log(res);
-                        let optimizedArray = res.data.data.results.map(dataItem => {
-                            return { [this.state.searchByValue]: dataItem[this.state.searchByValue] };
-                        });
-                        this.setState({ entityArray: optimizedArray });
-                        sessionStorage.setItem(this.state.entityType + newValue, JSON.stringify(optimizedArray));
-                        this.onSuggestionsFetchRequested({ value: newValue });
-                    })
-                    .catch(thrown => {
-                        if (axios.isCancel(thrown)) {
-                            // intentional cancle of request
-                        } else {
-                            // handle error
-                        }
+            // if (sessionStorage.getItem(this.state.entityType + "/" + newValue) !== null) {
+            //     this.setState({
+            //         entityArray: JSON.parse(sessionStorage.getItem(this.state.entityType + "/" + newValue))
+            //     });
+            // } else {
+            // Otherwise request suggestions from API and then cache them
+            let tempRequest = marvelAPI.getEntityStartingWith(this.state.entityType, newValue);
+            tempRequest.get
+                .then(res => {
+                    let optimizedArray = res.data.data.results.map(dataItem => {
+                        return { [this.state.searchByValue]: dataItem[this.state.searchByValue], id: dataItem.id };
                     });
+                    this.setState({ entityArray: optimizedArray });
+                    sessionStorage.setItem(this.state.entityType + "/" + newValue, JSON.stringify(optimizedArray));
+                    this.onSuggestionsFetchRequested({ value: newValue });
+                    this.props.updateSuggestedItems(this.state.entityType, optimizedArray);
+                })
+                .catch(thrown => {
+                    if (axios.isCancel(thrown)) {
+                        // intentional cancle of request
+                    } else {
+                        // handle error
+                    }
+                });
 
-                this.setState({ cancelPreviousRequest: tempRequest.cancleFunc });
-            }
+            this.setState({ cancelPreviousRequest: tempRequest.cancleFunc });
+            //}
         }
     }
 
@@ -216,8 +228,17 @@ class SearchInput extends Component {
     }
 }
 
+// TODO: add redux func proptype
 SearchInput.propTypes = {
     entityType: PropTypes.string.isRequired
 };
 
-export default SearchInput;
+// Redux Connections
+const matchDispatchToProps = dispatch => {
+    return bindActionCreators(
+        { updateSearchValue: updateSearchValue, updateSuggestedItems: updateSuggestedItems },
+        dispatch
+    );
+};
+
+export default connect(null, matchDispatchToProps)(SearchInput);

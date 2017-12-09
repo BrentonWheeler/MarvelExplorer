@@ -30,7 +30,27 @@ let marvelAPI = {
             ),
             cancleFunc: cancel
         };
-    }
+    },
+    getFilteredSearch: (entityType, id, filter) =>
+        axios.get(
+            "http://gateway.marvel.com/v1/public/" +
+                entityType.toLowerCase() +
+                "/" +
+                id +
+                "/" +
+                filter.toLowerCase() +
+                "?apikey=" +
+                process.env.MARVEL_PUBLIC_KEY
+        ),
+    getDetails: (entityType, id) =>
+        axios.get(
+            "http://gateway.marvel.com/v1/public/" +
+                entityType.toLowerCase() +
+                "/" +
+                id +
+                "?apikey=" +
+                process.env.MARVEL_PUBLIC_KEY
+        )
 };
 
 export default marvelAPI;

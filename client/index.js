@@ -7,6 +7,7 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import rootReducer from "./redux/reducers/rootReducer";
 import Home from "./components/Home";
 import Search from "./components/Search";
+import Details from "./components/Details";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));
@@ -17,7 +18,8 @@ ReactDOM.render(
             <div>
                 <Switch>
                     <Route exact path="/" component={Home} />
-                    <Route exact path="/:searchBy/" component={Search} />
+                    <Route exact path="/:searchBy" component={Search} />
+                    <Route exact path="/:entityType/:id" component={Details} />
                 </Switch>
             </div>
         </Provider>
