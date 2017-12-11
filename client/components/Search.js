@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import SearchInput from "./SearchInput";
 import ResultsContainer from "./ResultsContainer";
@@ -21,7 +20,7 @@ class Search extends Component {
                     <ExploreBy />
                 </div>
             );
-        } else if (this.props.search.searchID === null) {
+        } else if (this.props.search.id === null) {
             return (
                 <div>
                     <ExploreBy />
@@ -34,7 +33,7 @@ class Search extends Component {
                     <ExploreBy />
                     <SearchInput exploreBy={this.props.search.exploreBy} />
                     <h5>View Their...</h5>
-                    <ResultsContainer />
+                    <ResultsContainer history={this.props.history} />
                 </div>
             );
         }

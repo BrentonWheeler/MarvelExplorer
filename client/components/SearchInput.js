@@ -125,7 +125,6 @@ class SearchInput extends Component {
                 this.props.search.inputValue.toLowerCase()
             ) {
                 this.props.updateSearchID(this.props.search[this.props.search.exploreBy][i].id);
-                console.log("match");
             }
         }
     }
@@ -187,25 +186,34 @@ class SearchInput extends Component {
         }
 
         // Searching the api for suggestions if user given value is more than 0 characters
-        if (newValue.length >= 1) {
-            let tempRequest = marvelAPI.getEntityStartingWith(exploreBy, newValue);
-            tempRequest.get
-                .then(res => {
-                    let optimizedArray = res.data.data.results.map(dataItem => {
-                        return { [this.state.searchByValue]: dataItem[this.state.searchByValue], id: dataItem.id };
+        if (newValue.length > 0) {
+            // If search has been done before, load from memory
+            if (this.props.search.cachedSearches.includes(this.props.search.exploreBy + newValue)) {
+                this.onSuggestionsFetchRequested({ value: newValue });
+                this.checkForMatch(newValue);
+                // Else load from API
+            } else {
+                let tempRequest = marvelAPI.getEntityStartingWith(exploreBy, newValue);
+                tempRequest.get
+                    .then(res => {
+                        let optimizedArray = res.data.data.results.map(dataItem => {
+                            return { [this.state.searchByValue]: dataItem[this.state.searchByValue], id: dataItem.id };
+                        });
+                        this.setState({ entityArray: optimizedArray });
+                        this.onSuggestionsFetchRequested({ value: newValue });
+                        this.props.updateSuggestedItems(exploreBy, optimizedArray, [
+                            this.props.search.exploreBy + newValue
+                        ]);
+                        this.checkForMatch(newValue);
+                    })
+                    .catch(thrown => {
+                        if (axios.isCancel(thrown)) {
+                            // intentional cancle of request
+                        }
                     });
-                    this.setState({ entityArray: optimizedArray });
-                    this.onSuggestionsFetchRequested({ value: newValue });
-                    this.props.updateSuggestedItems(exploreBy, optimizedArray);
-                    this.checkForMatch(newValue);
-                })
-                .catch(thrown => {
-                    if (axios.isCancel(thrown)) {
-                        // intentional cancle of request
-                    }
-                });
 
-            this.setState({ cancelPreviousRequest: tempRequest.cancleFunc });
+                this.setState({ cancelPreviousRequest: tempRequest.cancleFunc });
+            }
         }
     }
 
@@ -215,7 +223,7 @@ class SearchInput extends Component {
 
     render () {
         const { suggestions } = this.state;
-        const { value } = this.state;
+        const value = this.props.search.inputValue;
 
         const inputProps = {
             placeholder: "Select " + this.props.exploreBy,
@@ -226,6 +234,7 @@ class SearchInput extends Component {
         return (
             <SearchInputStyledDiv className="row center-align">
                 <Autosuggest
+                    focusInputOnSuggestionClick={false}
                     suggestions={suggestions}
                     onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
                     onSuggestionsClearRequested={this.onSuggestionsClearRequested}

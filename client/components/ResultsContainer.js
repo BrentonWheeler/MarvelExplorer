@@ -33,7 +33,7 @@ class ResultsContainer extends Component {
                 {this.state.entitiesRelationship[this.props.search.exploreBy].map(relationship => {
                     return (
                         <TabPanel>
-                            <Results filter={relationship} />
+                            <Results history={this.props.history} filter={relationship} />
                         </TabPanel>
                     );
                 })}

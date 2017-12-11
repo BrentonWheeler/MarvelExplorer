@@ -1,12 +1,12 @@
 import { CACHE_RESULTS } from "./types";
 
-export default function updateExploreByAction (storageString, results) {
+export default function cacheResultsAction (storageString, results) {
     return dispatch => {
-        dispatch(updateExploreByActionAsync(storageString, results));
+        dispatch(cacheResultsActionAsync(storageString, results));
     };
 }
 
-function updateExploreByActionAsync (storageString, results) {
+function cacheResultsActionAsync (storageString, results) {
     return {
         type: CACHE_RESULTS,
         storageString: storageString,

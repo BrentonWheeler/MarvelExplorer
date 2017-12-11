@@ -15,11 +15,11 @@ class Results extends Component {
         //TODO: limit and offset from props
         this.state.storageString =
             this.props.search.exploreBy +
-            this.props.search.searchID +
+            this.props.search.id +
             this.props.filter +
             this.state.limit +
             this.state.offset;
-        this.convertResultToHTML = this.convertResultToHTML.bind(this);
+        this.convertResultToJSX = this.convertResultToJSX.bind(this);
         this.goToDetails = this.goToDetails.bind(this);
     }
 
@@ -32,7 +32,7 @@ class Results extends Component {
             marvelAPI
                 .getFilteredSearch(
                     this.props.search.exploreBy,
-                    this.props.search.searchID,
+                    this.props.search.id,
                     this.props.filter,
                     this.state.limit,
                     this.state.offset
@@ -46,11 +46,10 @@ class Results extends Component {
     }
 
     goToDetails (id) {
-        //save url here
-        this.props.history.push("/" + this.props.search.filter + "/" + id);
+        this.props.history.push("/" + this.props.filter + "/" + id);
     }
 
-    convertResultToHTML (result) {
+    convertResultToJSX (result) {
         switch (this.props.filter) {
             case "Characters":
                 return (
@@ -115,7 +114,7 @@ class Results extends Component {
                 <div>
                     <h2>Results</h2>
                     {source.map(result => {
-                        return this.convertResultToHTML(result);
+                        return this.convertResultToJSX(result);
                     })}
                 </div>
             );
