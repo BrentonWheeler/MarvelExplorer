@@ -1,11 +1,48 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import cacheResults from "../redux/actions/cacheResultsAction";
+import { bindActionCreators } from "redux";
+import marvelAPI from "../api/marvelAPI";
 
 class Results extends Component {
     constructor (props) {
         super(props);
+        this.state = {
+            loading: true,
+            limit: 20,
+            offset: 0
+        };
+        //TODO: limit and offset from props
+        this.state.storageString =
+            this.props.search.exploreBy +
+            this.props.search.searchID +
+            this.props.filter +
+            this.state.limit +
+            this.state.offset;
         this.convertResultToHTML = this.convertResultToHTML.bind(this);
         this.goToDetails = this.goToDetails.bind(this);
+    }
+
+    componentWillMount () {
+        // If relevant data has been stored already, load it otherwise request it from the API
+        if (this.props.search.cachedResults.hasOwnProperty(this.state.storageString)) {
+            // TODO: google below line interation
+            this.state.loading = false;
+        } else {
+            marvelAPI
+                .getFilteredSearch(
+                    this.props.search.exploreBy,
+                    this.props.search.searchID,
+                    this.props.filter,
+                    this.state.limit,
+                    this.state.offset
+                )
+                .then(res => {
+                    // Cache result agaisnt identifiable name
+                    this.props.cacheResults(this.state.storageString, res.data.data.results);
+                    this.setState({ loading: false });
+                });
+        }
     }
 
     goToDetails (id) {
@@ -14,7 +51,7 @@ class Results extends Component {
     }
 
     convertResultToHTML (result) {
-        switch (this.props.search.filter) {
+        switch (this.props.filter) {
             case "Characters":
                 return (
                     <div key={result.id}>
@@ -67,21 +104,22 @@ class Results extends Component {
     }
 
     render () {
+        let source = this.props.search.cachedResults[this.state.storageString];
         let results;
-        if (this.props.loading === true) {
+        if (this.state.loading === true) {
             results = <h1> loading... </h1>;
-        } else if (this.props.search.filteredSearch === null) {
+        } else if (source === undefined) {
             results = <div />;
-        } else if (this.props.search.filteredSearch.length > 0) {
+        } else if (source.length > 0) {
             results = (
                 <div>
                     <h2>Results</h2>
-                    {this.props.search.filteredSearch.map(result => {
+                    {source.map(result => {
                         return this.convertResultToHTML(result);
                     })}
                 </div>
             );
-        } else if (this.props.search.filteredSearch.length === 0) {
+        } else if (source.length === 0) {
             results = <h2>No results for that.</h2>;
         }
 
@@ -89,10 +127,19 @@ class Results extends Component {
     }
 }
 
+const matchDispatchToProps = dispatch => {
+    return bindActionCreators(
+        {
+            cacheResults: cacheResults
+        },
+        dispatch
+    );
+};
+
 const mapStateToProps = state => {
     return {
         search: state.searchState
     };
 };
 
-export default connect(mapStateToProps, null)(Results);
+export default connect(mapStateToProps, matchDispatchToProps)(Results);

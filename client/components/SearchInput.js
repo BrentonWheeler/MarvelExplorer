@@ -9,6 +9,7 @@ import axios from "axios";
 import marvelAPI from "../api/marvelAPI";
 import updateSearchValue from "../redux/actions/updateSearchValueAction";
 import updateSuggestedItems from "../redux/actions/updateSuggestedItemsAction";
+import updateSearchID from "../redux/actions/updateSearchIDAction";
 
 const SearchInputStyledDiv = styled.div`
     body {
@@ -80,22 +81,16 @@ class SearchInput extends Component {
 
         this.state = {
             suggestions: [],
-            entityType: this.props.entityType,
             value: "",
             entityArray: [],
             cancelPreviousRequest: null,
             delayedSearch: null
         };
 
-        // TODO: flip this statement
-        if (
-            this.props.entityType === "Comics" ||
-            this.props.entityType === "Series" ||
-            this.props.entityType === "Events"
-        ) {
-            this.state.searchByValue = "title";
-        } else {
+        if (this.props.exploreBy === "Characters") {
             this.state.searchByValue = "name";
+        } else {
+            this.state.searchByValue = "title";
         }
 
         this.onSuggestionsFetchRequested = this.onSuggestionsFetchRequested.bind(this);
@@ -106,6 +101,33 @@ class SearchInput extends Component {
         this.onChange = this.onChange.bind(this);
         this.renderSuggestion = this.renderSuggestion.bind(this);
         this.searchAPIForSuggestions = this.searchAPIForSuggestions.bind(this);
+        this.checkForMatch = this.checkForMatch.bind(this);
+    }
+
+    componentWillReceiveProps (nextProps) {
+        if (nextProps.exploreBy !== this.props.exploreBy) {
+            if (nextProps.exploreBy === "Characters") {
+                this.setState({ searchByValue: "name" });
+            } else {
+                this.setState({ searchByValue: "title" });
+            }
+
+            this.onSuggestionsClearRequested();
+            this.searchAPIForSuggestions(this.state.value, nextProps.exploreBy);
+        }
+    }
+
+    checkForMatch (value) {
+        this.props.updateSearchID(null);
+        for (let i = 0; i < this.props.search[this.props.search.exploreBy].length; i++) {
+            if (
+                this.props.search[this.props.search.exploreBy][i][this.state.searchByValue].toLowerCase() ===
+                this.props.search.inputValue.toLowerCase()
+            ) {
+                this.props.updateSearchID(this.props.search[this.props.search.exploreBy][i].id);
+                console.log("match");
+            }
+        }
     }
 
     escapeRegexCharacters (str) {
@@ -147,20 +169,18 @@ class SearchInput extends Component {
         }
         this.setState({
             delayedSearch: setTimeout(() => {
-                this.searchAPIForSuggestions(newValue);
-            }, 700)
+                this.searchAPIForSuggestions(newValue, this.props.exploreBy);
+            }, 500)
         });
+
         this.setState({
             value: newValue
         });
-
-        // Passing to redux store to use outside this component
+        // Passing to redux store to use search value outside this component
         this.props.updateSearchValue(newValue);
-
-        // TODO: Enable buttons here by styling
     }
 
-    searchAPIForSuggestions (newValue) {
+    searchAPIForSuggestions (newValue, exploreBy) {
         // Cancleing the previous request if their is one pending
         if (this.state.cancelPreviousRequest !== null) {
             this.state.cancelPreviousRequest();
@@ -168,34 +188,24 @@ class SearchInput extends Component {
 
         // Searching the api for suggestions if user given value is more than 0 characters
         if (newValue.length >= 1) {
-            // Checking if current seach has been Cached to not unnecessarily draw from API
-            // if (sessionStorage.getItem(this.state.entityType + "/" + newValue) !== null) {
-            //     this.setState({
-            //         entityArray: JSON.parse(sessionStorage.getItem(this.state.entityType + "/" + newValue))
-            //     });
-            // } else {
-            // Otherwise request suggestions from API and then cache them
-            let tempRequest = marvelAPI.getEntityStartingWith(this.state.entityType, newValue);
+            let tempRequest = marvelAPI.getEntityStartingWith(exploreBy, newValue);
             tempRequest.get
                 .then(res => {
                     let optimizedArray = res.data.data.results.map(dataItem => {
                         return { [this.state.searchByValue]: dataItem[this.state.searchByValue], id: dataItem.id };
                     });
                     this.setState({ entityArray: optimizedArray });
-                    sessionStorage.setItem(this.state.entityType + "/" + newValue, JSON.stringify(optimizedArray));
                     this.onSuggestionsFetchRequested({ value: newValue });
-                    this.props.updateSuggestedItems(this.state.entityType, optimizedArray);
+                    this.props.updateSuggestedItems(exploreBy, optimizedArray);
+                    this.checkForMatch(newValue);
                 })
                 .catch(thrown => {
                     if (axios.isCancel(thrown)) {
                         // intentional cancle of request
-                    } else {
-                        // handle error
                     }
                 });
 
             this.setState({ cancelPreviousRequest: tempRequest.cancleFunc });
-            //}
         }
     }
 
@@ -208,7 +218,7 @@ class SearchInput extends Component {
         const { value } = this.state;
 
         const inputProps = {
-            placeholder: "Select " + this.state.entityType,
+            placeholder: "Select " + this.props.exploreBy,
             value,
             onChange: this.onChange
         };
@@ -236,9 +246,19 @@ SearchInput.propTypes = {
 // Redux Connections
 const matchDispatchToProps = dispatch => {
     return bindActionCreators(
-        { updateSearchValue: updateSearchValue, updateSuggestedItems: updateSuggestedItems },
+        {
+            updateSearchValue: updateSearchValue,
+            updateSuggestedItems: updateSuggestedItems,
+            updateSearchID: updateSearchID
+        },
         dispatch
     );
 };
 
-export default connect(null, matchDispatchToProps)(SearchInput);
+const mapStateToProps = state => {
+    return {
+        search: state.searchState
+    };
+};
+
+export default connect(mapStateToProps, matchDispatchToProps)(SearchInput);

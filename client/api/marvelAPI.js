@@ -31,7 +31,7 @@ let marvelAPI = {
             cancleFunc: cancel
         };
     },
-    getFilteredSearch: (entityType, id, filter) =>
+    getFilteredSearch: (entityType, id, filter, limit = 20, offset = 0) =>
         axios.get(
             "http://gateway.marvel.com/v1/public/" +
                 entityType.toLowerCase() +
@@ -40,7 +40,11 @@ let marvelAPI = {
                 "/" +
                 filter.toLowerCase() +
                 "?apikey=" +
-                process.env.MARVEL_PUBLIC_KEY
+                process.env.MARVEL_PUBLIC_KEY +
+                "&limit=" +
+                limit +
+                "&offset=" +
+                offset
         ),
     getDetails: (entityType, id) =>
         axios.get(

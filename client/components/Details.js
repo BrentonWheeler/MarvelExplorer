@@ -1,90 +1,105 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import marvelAPI from "../api/marvelAPI";
+import { connect } from "react-redux";
+import cacheResults from "../redux/actions/cacheResultsAction";
+import { bindActionCreators } from "redux";
 
 class Details extends Component {
     constructor (props) {
         super(props);
         this.state = {
             loading: true,
-            html: <div />,
-            possibleProperties: ["characters", "comics", "creators", "events", "series", "stories"]
+            storageString: this.props.search.exploreBy + this.props.search.searchID
         };
         this.convertDetailsToHTML = this.convertDetailsToHTML.bind(this);
     }
 
     componentWillMount () {
-        //start loading state
-        marvelAPI.getDetails(this.props.match.params.entityType, this.props.match.params.id).then(res => {
-            console.log(res);
-            this.convertDetailsToHTML(res);
-        });
+        // If relevant data has been stored already, load it otherwise request it from the API
+        if (this.props.search.cachedResults.hasOwnProperty(this.state.storageString)) {
+            this.setState({ loading: false });
+        } else {
+            marvelAPI.getDetails(this.props.search.exploreBy, this.props.search.searchID).then(res => {
+                // Cache result agaisnt identifiable name
+                this.props.cacheResults(this.state.storageString, res.data.data.results[0]);
+                this.setState({ loading: false });
+            });
+        }
     }
 
-    convertDetailsToHTML (responseJSON) {
-        // link back to marvel at bottom
-        let details = responseJSON.data.data.results[0];
-        let pageHeader;
+    // TODO: link back to marvel at bottom
+    convertDetailsToHTML (source) {
+        console.log("source");
+        console.log(source);
+        let header;
         let description = <div />;
         let thumbnail = <div />;
-        if (details.hasOwnProperty("name")) {
-            pageHeader = details.name;
-        } else if (details.hasOwnProperty("title")) {
-            pageHeader = details.title;
+        if (source.hasOwnProperty("name")) {
+            header = source.name;
+        } else if (source.hasOwnProperty("title")) {
+            header = source.title;
         } else {
-            pageHeader = details.fullName;
+            header = source.fullName;
         }
-        if (details.hasOwnProperty("description")) {
-            if (details.thumbnail != null) {
+        if (source.hasOwnProperty("description")) {
+            if (source.thumbnail != null) {
                 description = (
                     <div>
-                        <h3>Description: {details.description}</h3>
+                        <h3>Description: {source.description}</h3>
                     </div>
                 );
             }
         }
-        if (details.hasOwnProperty("thumbnail")) {
-            if (details.thumbnail != null) {
+        if (source.hasOwnProperty("thumbnail")) {
+            if (source.thumbnail != null) {
                 thumbnail = (
                     <div>
                         <img
-                            src={details.thumbnail.path + "/standard_fantastic." + details.thumbnail.extension}
-                            alt={pageHeader + " thumbnail"}
+                            src={source.thumbnail.path + "/standard_fantastic." + source.thumbnail.extension}
+                            alt={header + " thumbnail"}
                         />
                     </div>
                 );
             }
         }
 
-        console.log(details);
-        let html = (
+        return (
             <div>
-                <h1>{pageHeader}</h1>
+                <h1>{header}</h1>
                 <h1>{description}</h1>
                 <h3>{thumbnail}</h3>
-                {this.state.possibleProperties.map(property => {
-                    if (details.hasOwnProperty(property)) {
-                        return (
-                            <div>
-                                <h5>{property}</h5>
-                            </div>
-                        );
-                    }
-                })}
             </div>
         );
-        this.setState({ html: html });
     }
 
     render () {
-        return <div>{this.state.html}</div>;
+        let source = this.props.search.cachedResults[this.state.storageString];
+        let html;
+        if (this.state.loading === true) {
+            html = <h1> loading... </h1>;
+        } else if (source === undefined) {
+            html = <div />;
+        } else if (source !== undefined) {
+            html = this.convertDetailsToHTML(source);
+        }
+
+        return <div>{html}</div>;
     }
 }
 
-Details.propTypes = {
-    history: PropTypes.shape({
-        push: PropTypes.func.isRequired
-    }).isRequired
+const matchDispatchToProps = dispatch => {
+    return bindActionCreators(
+        {
+            cacheResults: cacheResults
+        },
+        dispatch
+    );
 };
 
-export default Details;
+const mapStateToProps = state => {
+    return {
+        search: state.searchState
+    };
+};
+
+export default connect(mapStateToProps, matchDispatchToProps)(Details);
