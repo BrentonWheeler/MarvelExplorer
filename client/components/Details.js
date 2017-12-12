@@ -19,7 +19,6 @@ class Details extends Component {
     componentWillMount () {
         // Load details from direct URL access
         if (this.props.match !== undefined) {
-            console.log("test");
             this.setState({ loading: true });
             marvelAPI.getDetails(this.props.match.params.entityType, this.props.match.params.id).then(res => {
                 this.setState({ loading: false, APIfromURL: res.data.data.results[0] });
@@ -56,7 +55,6 @@ class Details extends Component {
         }
         if (source.hasOwnProperty("description")) {
             if (source.description !== null && source.description !== "") {
-                console.log(source);
                 description = (
                     <div>
                         <h3>Description</h3>
@@ -77,12 +75,13 @@ class Details extends Component {
                 );
             }
         }
-        console.log(source);
         let stats = this.state.possibleRelationships.map(rel => {
             if (source.hasOwnProperty(rel)) {
                 return (
                     <div>
-                        {source[rel].hasOwnProperty("available") ? source[rel].available : 1} {rel}
+                        <div className="flow-text">
+                            {source[rel].hasOwnProperty("available") ? source[rel].available : 1} {rel}
+                        </div>
                     </div>
                 );
             }
@@ -110,9 +109,9 @@ class Details extends Component {
         if (this.state.loading === true) {
             html = (
                 <div
-                    className="App row valign-wrapper"
+                    className="row valign-wrapper"
                     style={{
-                        marginTop: "20%"
+                        marginTop: "15%"
                     }}
                 >
                     <div className="col s6 offset-s3 center-align ">

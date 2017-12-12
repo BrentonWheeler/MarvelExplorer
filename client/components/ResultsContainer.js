@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import Details from "./Details";
 import Results from "./Results";
+import { bindActionCreators } from "redux";
+import updatePageOptions from "../redux/actions/updatePageOptionsAction";
 
 class ResultsContainer extends Component {
     constructor (props) {
@@ -15,11 +17,16 @@ class ResultsContainer extends Component {
                 Series: ["Characters", "Comics", "Creators", "Events", "Stories"]
             }
         };
+        this.resetPageNumber = this.resetPageNumber.bind(this);
+    }
+
+    resetPageNumber () {
+        this.props.updatePageOptions(this.props.search.sliderValue, 1);
     }
 
     render () {
         return (
-            <Tabs>
+            <Tabs onSelect={this.resetPageNumber}>
                 <TabList>
                     <Tab>Details</Tab>
                     {this.state.entitiesRelationship[this.props.search.exploreBy].map(relationship => {
@@ -43,10 +50,19 @@ class ResultsContainer extends Component {
 }
 
 // Redux Connections
+const matchDispatchToProps = dispatch => {
+    return bindActionCreators(
+        {
+            updatePageOptions: updatePageOptions
+        },
+        dispatch
+    );
+};
+
 const mapStateToProps = state => {
     return {
         search: state.searchState
     };
 };
 
-export default connect(mapStateToProps, null)(ResultsContainer);
+export default connect(mapStateToProps, matchDispatchToProps)(ResultsContainer);

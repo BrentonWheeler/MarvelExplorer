@@ -31,6 +31,7 @@ let marvelAPI = {
             cancleFunc: cancel
         };
     },
+    //TODO: Make the order consistant with orderBy param based on entityType
     getFilteredSearch: (entityType, id, filter, limit = 20, offset = 0) =>
         axios.get(
             "http://gateway.marvel.com/v1/public/" +

@@ -1,7 +1,6 @@
 import { UPDATE_SUGGESTED_ITEMS } from "./types";
 
 export default function updateSuggestedItemsAction (entityType, newItemArray, searchStringArray) {
-    console.log(searchStringArray);
     return dispatch => {
         dispatch(updateSuggestedItemsActionAsync(entityType, newItemArray, searchStringArray));
     };

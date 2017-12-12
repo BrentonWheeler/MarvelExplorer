@@ -32,7 +32,7 @@ class ExploreBy extends Component {
     render () {
         return (
             <div className="center-align ">
-                <h3>Explore By</h3>
+                <h1>Explore By</h1>
                 <div className="row ">
                     <div className="row col s12 offset-l2">
                         {this.state.entities.map((entity, i) => {

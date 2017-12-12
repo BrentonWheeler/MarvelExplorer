@@ -5,45 +5,65 @@ import { bindActionCreators } from "redux";
 import marvelAPI from "../api/marvelAPI";
 import { Link } from "react-router-dom";
 import Truncate from "react-truncate";
+import Pagination from "./Pagination";
 
 class Results extends Component {
     constructor (props) {
         super(props);
         this.state = {
-            loading: true,
-            limit: 20,
-            offset: 0
+            loading: false,
+            storageString: null
         };
-        //TODO: limit and offset from props
-        this.state.storageString =
-            this.props.search.exploreBy +
-            this.props.search.id +
-            this.props.filter +
-            this.state.limit +
-            this.state.offset;
+
         this.convertResultToJSX = this.convertResultToJSX.bind(this);
         this.goToDetails = this.goToDetails.bind(this);
+        this.cacheCheck = this.cacheCheck.bind(this);
     }
 
     componentWillMount () {
-        // If relevant data has been stored already, load it otherwise request it from the API
-        if (this.props.search.cachedResults.hasOwnProperty(this.state.storageString)) {
-            this.setState({ loading: false });
-        } else {
-            marvelAPI
-                .getFilteredSearch(
-                    this.props.search.exploreBy,
-                    this.props.search.id,
-                    this.props.filter,
-                    this.state.limit,
-                    this.state.offset
-                )
-                .then(res => {
-                    // Cache result agaisnt identifiable name
-                    this.props.cacheResults(this.state.storageString, res.data.data.results);
-                    this.setState({ loading: false });
-                });
+        this.cacheCheck();
+    }
+
+    componentWillReceiveProps (nextProps) {
+        if (
+            nextProps.search.pageNumber !== this.props.search.pageNumber ||
+            nextProps.search.sliderValue !== this.props.search.sliderValue
+        ) {
+            this.cacheCheck(
+                nextProps.search.sliderValue,
+                nextProps.search.sliderValue * (nextProps.search.pageNumber - 1)
+            );
         }
+    }
+
+    cacheCheck (
+        limit = this.props.search.sliderValue,
+        offset = this.props.search.sliderValue * (this.props.search.pageNumber - 1)
+    ) {
+        // If relevant data has been stored already, load it otherwise request it from the API
+        this.setState(
+            {
+                storageString: this.props.search.exploreBy + this.props.search.id + this.props.filter + limit + offset
+            },
+            () => {
+                if (!this.props.search.cachedResults.hasOwnProperty(this.state.storageString)) {
+                    this.setState({ loading: true });
+                    marvelAPI
+                        .getFilteredSearch(
+                            this.props.search.exploreBy,
+                            this.props.search.id,
+                            this.props.filter,
+                            limit,
+                            offset
+                        )
+                        .then(res => {
+                            // Cache result agaisnt identifiable name
+                            this.props.cacheResults(this.state.storageString, res.data.data.results);
+                            this.setState({ loading: false });
+                        });
+                }
+            }
+        );
     }
 
     goToDetails (id) {
@@ -71,7 +91,7 @@ class Results extends Component {
                     src={
                         result.hasOwnProperty("thumbnail") && result.thumbnail != null ?
                             result.thumbnail.path + "/portrait_small." + result.thumbnail.extension :
-                            ""
+                            "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available/portrait_small.jpg"
                     }
                     alt={header + " thumbnail"}
                 />
@@ -80,14 +100,14 @@ class Results extends Component {
                     src={
                         result.hasOwnProperty("thumbnail") && result.thumbnail != null ?
                             result.thumbnail.path + "/portrait_uncanny." + result.thumbnail.extension :
-                            ""
+                            "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available/portrait_uncanny.jpg"
                     }
                     alt={header + " thumbnail"}
                 />
-                <span className="title hide-on-large-only ">
+                <span className="title hide-on-large-only flow-text">
                     <b>{header}</b>
                 </span>
-                <span className="title hide-on-small-only ">
+                <span className="title hide-on-small-only flow-text">
                     <h5>{header}</h5>
                 </span>
                 <p>
@@ -107,15 +127,20 @@ class Results extends Component {
         let html;
         if (this.state.loading === true) {
             html = (
-                <div
-                    className="App row valign-wrapper"
-                    style={{
-                        marginTop: "20%"
-                    }}
-                >
-                    <div className="col s6 offset-s3 center-align ">
-                        <div className="progress">
-                            <div className="indeterminate" />
+                <div>
+                    <div className="center-align">
+                        <Pagination />
+                    </div>
+                    <div
+                        className="row valign-wrapper"
+                        style={{
+                            marginTop: "15%"
+                        }}
+                    >
+                        <div className="col s6 offset-s3 center-align ">
+                            <div className="progress">
+                                <div className="indeterminate" />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -125,7 +150,10 @@ class Results extends Component {
         } else if (source.length > 0) {
             html = (
                 <div>
-                    <h3>Results</h3>
+                    <div className="center-align">
+                        <Pagination />
+                    </div>
+                    <h2 className="center-align">Results</h2>
                     <ul className="collection">
                         {source.map(result => {
                             return this.convertResultToJSX(result);
@@ -134,7 +162,14 @@ class Results extends Component {
                 </div>
             );
         } else if (source.length === 0) {
-            html = <h2>No results for that.</h2>;
+            html = (
+                <div>
+                    <div className="center-align">
+                        <Pagination />
+                    </div>
+                    No results for that.
+                </div>
+            );
         }
 
         return <div>{html}</div>;

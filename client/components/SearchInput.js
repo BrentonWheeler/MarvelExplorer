@@ -162,21 +162,25 @@ class SearchInput extends Component {
     }
 
     onChange (event, { newValue }) {
-        // Maintaining a running timer to send a request to API after the user has stopped typing
-        if (this.state.delayedSearch !== null) {
-            clearTimeout(this.state.delayedSearch);
-        }
-        this.setState({
-            delayedSearch: setTimeout(() => {
-                this.searchAPIForSuggestions(newValue, this.props.exploreBy);
-            }, 500)
-        });
+        // Checking that the user did not just click a suggestion which would change capitalization
+        if (this.props.search.inputValue.toLowerCase() !== newValue.toLowerCase()) {
+            // Maintaining a running timer to send a request to API after the user has stopped typing
+            if (this.state.delayedSearch !== null) {
+                clearTimeout(this.state.delayedSearch);
+            }
 
-        this.setState({
-            value: newValue
-        });
-        // Passing to redux store to use search value outside this component
-        this.props.updateSearchValue(newValue);
+            this.setState({
+                delayedSearch: setTimeout(() => {
+                    this.searchAPIForSuggestions(newValue, this.props.exploreBy);
+                }, 500)
+            });
+
+            this.setState({
+                value: newValue
+            });
+            // Passing to redux store to use search value outside this component
+            this.props.updateSearchValue(newValue);
+        }
     }
 
     searchAPIForSuggestions (newValue, exploreBy) {
@@ -226,7 +230,7 @@ class SearchInput extends Component {
         const value = this.props.search.inputValue;
 
         const inputProps = {
-            placeholder: "Select " + this.props.exploreBy,
+            placeholder: "Search " + this.props.exploreBy,
             value,
             onChange: this.onChange
         };

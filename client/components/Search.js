@@ -25,7 +25,7 @@ class Search extends Component {
                 <div className="container">
                     <ExploreBy />
                     <div className="row">
-                        <div className="col s10 offset-s1 l6 offset-l3">
+                        <div className="col s10 offset-s1 l4 offset-l4">
                             <SearchInput exploreBy={this.props.search.exploreBy} />
                         </div>
                     </div>
@@ -36,7 +36,7 @@ class Search extends Component {
                 <div className="container">
                     <ExploreBy />
                     <div className="row">
-                        <div className="col s10 offset-s1 l6 offset-l3 ">
+                        <div className="col s10 offset-s1 l4 offset-l4 ">
                             <SearchInput exploreBy={this.props.search.exploreBy} />
                         </div>
                     </div>

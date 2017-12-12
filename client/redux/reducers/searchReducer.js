@@ -3,13 +3,16 @@ import {
     UPDATE_SUGGESTED_ITEMS,
     UPDATE_EXPLORE_BY,
     UPDATE_SEARCH_ID,
-    CACHE_RESULTS
+    CACHE_RESULTS,
+    UPDATE_PAGE_OPTIONS
 } from "../actions/types";
 
 const initialState = {
     filteredSearch: null,
     filter: null,
     inputValue: "",
+    sliderValue: 20,
+    pageNumber: 1,
     exploreBy: null,
     id: null,
     cachedResults: {},
@@ -51,7 +54,12 @@ export default (state = initialState, action) => {
                 cachedResults: newCache
             });
             break;
-
+        case UPDATE_PAGE_OPTIONS:
+            return Object.assign({}, state, {
+                sliderValue: action.sliderValue,
+                pageNumber: action.pageNumber
+            });
+            break;
         default:
             return state;
     }
