@@ -56,6 +56,8 @@ const SearchInputStyledDiv = styled.div`
         font-size: 16px;
         border-bottom-left-radius: 4px;
         border-bottom-right-radius: 4px;
+        max-height: 33vh;
+        overflow-y: auto;
         z-index: 2;
     }
 
@@ -84,7 +86,8 @@ class SearchInput extends Component {
             value: "",
             entityArray: [],
             cancelPreviousRequest: null,
-            delayedSearch: null
+            delayedSearch: null,
+            loading: false
         };
 
         if (this.props.exploreBy === "Characters") {
@@ -134,15 +137,19 @@ class SearchInput extends Component {
     }
 
     getSuggestions (value) {
-        const escapedValue = this.escapeRegexCharacters(value.trim());
+        if (this.state.loading) {
+            return [{ [this.state.searchByValue]: "loading..." }];
+        } else {
+            const escapedValue = this.escapeRegexCharacters(value.trim());
 
-        if (escapedValue === "") {
-            return [];
+            if (escapedValue === "") {
+                return [];
+            }
+
+            const regex = new RegExp("^" + escapedValue, "i");
+
+            return this.state.entityArray.filter(entity => regex.test(entity[this.state.searchByValue]));
         }
-
-        const regex = new RegExp("^" + escapedValue, "i");
-
-        return this.state.entityArray.filter(entity => regex.test(entity[this.state.searchByValue]));
     }
 
     getSuggestionValue (suggestion) {
@@ -197,6 +204,8 @@ class SearchInput extends Component {
                 this.checkForMatch(newValue);
                 // Else load from API
             } else {
+                this.setState({ loading: true });
+                this.onSuggestionsFetchRequested({ value: newValue });
                 let tempRequest = marvelAPI.getEntityStartingWith(exploreBy, newValue);
                 tempRequest.get
                     .then(res => {
@@ -204,6 +213,7 @@ class SearchInput extends Component {
                             return { [this.state.searchByValue]: dataItem[this.state.searchByValue], id: dataItem.id };
                         });
                         this.setState({ entityArray: optimizedArray });
+                        this.setState({ loading: false });
                         this.onSuggestionsFetchRequested({ value: newValue });
                         this.props.updateSuggestedItems(exploreBy, optimizedArray, [
                             this.props.search.exploreBy + newValue
@@ -228,7 +238,36 @@ class SearchInput extends Component {
     }
 
     renderSuggestion (suggestion) {
-        return <span className="l12 s12">{suggestion[this.state.searchByValue]}</span>;
+        if (this.state.loading) {
+            return (
+                <span className="l12 s12">
+                    <div
+                        className="row valign-wrapper"
+                        style={{
+                            marginTop: "10%"
+                        }}
+                    >
+                        <div className="col s6 offset-s3 center-align ">
+                            <div className="preloader-wrapper small active">
+                                <div className="spinner-layer spinner-red-only">
+                                    <div className="circle-clipper left">
+                                        <div className="circle" />
+                                    </div>
+                                    <div className="gap-patch">
+                                        <div className="circle" />
+                                    </div>
+                                    <div className="circle-clipper right">
+                                        <div className="circle" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </span>
+            );
+        } else {
+            return <span className="l12 s12">{suggestion[this.state.searchByValue]}</span>;
+        }
     }
 
     render () {
