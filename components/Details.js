@@ -88,7 +88,7 @@ class Details extends Component {
         });
 
         return (
-            <div className="center-align">
+            <div className="container center-align">
                 <h1>{header}</h1>
                 {thumbnail}
                 {description}

@@ -134,7 +134,7 @@ class Results extends Component {
                     <div
                         className="row valign-wrapper"
                         style={{
-                            marginTop: "15%"
+                            height: "80vh"
                         }}
                     >
                         <div className="col s6 offset-s3 center-align ">
@@ -167,7 +167,13 @@ class Results extends Component {
                     <div className="center-align">
                         <Pagination />
                     </div>
-                    No results for that.
+                    <div
+                        style={{
+                            height: "80vh"
+                        }}
+                    >
+                        No results for that.
+                    </div>
                 </div>
             );
         }

@@ -30,7 +30,7 @@ class Pagination extends Component {
                     // TODO: check if its outside max range of that slider value
                     if (i === this.props.search.pageNumber) {
                         buttons.push(
-                            <li key={i} style={{ color: "white" }} className="waves-effect red lighten-1">
+                            <li key={i} className="waves-effect blue-grey  lighten-1">
                                 <a onClick={this.pageOnChange.bind(this, event, i)}>{i}</a>
                             </li>
                         );
@@ -59,8 +59,8 @@ class Pagination extends Component {
                             min="1"
                             max="100"
                         />
-                        <div className="center-align">{this.state.sliderValue} results</div>
                     </p>
+                    <div className="center-align">{this.state.sliderValue} results</div>
                 </form>
                 <ul className="pagination">{displayPageButtons()}</ul>
             </div>
