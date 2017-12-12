@@ -208,6 +208,12 @@ class SearchInput extends Component {
                         this.props.updateSuggestedItems(exploreBy, optimizedArray, [
                             this.props.search.exploreBy + newValue
                         ]);
+                        // Shows suggestions that might be hidden under keyboard for mobile
+                        document.activeElement.scrollIntoView({
+                            behaviour: "smooth",
+                            block: "start",
+                            inline: "nearest"
+                        });
                         this.checkForMatch(newValue);
                     })
                     .catch(thrown => {

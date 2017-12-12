@@ -13101,6 +13101,10 @@ var Details = function (_Component) {
             }
         }
 
+        // componentDidUpdate () {
+        //     document.activeElement.scrollIntoView(true, { behavior: "smooth" });
+        // }
+
         // TODO: link back to marvel at bottom
 
     }, {
@@ -27514,6 +27518,7 @@ var SearchInput = function (_Component) {
         _this.renderSuggestion = _this.renderSuggestion.bind(_this);
         _this.searchAPIForSuggestions = _this.searchAPIForSuggestions.bind(_this);
         _this.checkForMatch = _this.checkForMatch.bind(_this);
+        _this.onFocus = _this.onFocus.bind(_this);
         return _this;
     }
 
@@ -27585,6 +27590,12 @@ var SearchInput = function (_Component) {
             });
         }
     }, {
+        key: "onFocus",
+        value: function onFocus(event, test) {
+            //console.log(event);
+            //document.activeElement.scrollIntoView(true);
+        }
+    }, {
         key: "onChange",
         value: function onChange(event, _ref2) {
             var _this3 = this;
@@ -27639,6 +27650,12 @@ var SearchInput = function (_Component) {
                         _this4.setState({ entityArray: optimizedArray });
                         _this4.onSuggestionsFetchRequested({ value: newValue });
                         _this4.props.updateSuggestedItems(exploreBy, optimizedArray, [_this4.props.search.exploreBy + newValue]);
+                        //console.log(document.activeElement);
+                        document.activeElement.scrollIntoView({
+                            behaviour: "smooth",
+                            block: "start",
+                            inline: "nearest"
+                        });
                         _this4.checkForMatch(newValue);
                     }).catch(function (thrown) {
                         if (_axios2.default.isCancel(thrown)) {
@@ -27669,7 +27686,8 @@ var SearchInput = function (_Component) {
             var inputProps = {
                 placeholder: "Search " + this.props.exploreBy,
                 value: value,
-                onChange: this.onChange
+                onChange: this.onChange,
+                onFocus: this.onFocus
             };
 
             return _react2.default.createElement(
