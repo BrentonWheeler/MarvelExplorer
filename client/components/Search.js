@@ -16,23 +16,30 @@ class Search extends Component {
     render () {
         if (this.props.search.exploreBy === null) {
             return (
-                <div>
+                <div className="container">
                     <ExploreBy />
                 </div>
             );
         } else if (this.props.search.id === null) {
             return (
-                <div>
+                <div className="container">
                     <ExploreBy />
-                    <SearchInput exploreBy={this.props.search.exploreBy} />
+                    <div className="row">
+                        <div className="col s10 offset-s1 l6 offset-l3">
+                            <SearchInput exploreBy={this.props.search.exploreBy} />
+                        </div>
+                    </div>
                 </div>
             );
         } else {
             return (
-                <div>
+                <div className="container">
                     <ExploreBy />
-                    <SearchInput exploreBy={this.props.search.exploreBy} />
-                    <h5>View Their...</h5>
+                    <div className="row">
+                        <div className="col s10 offset-s1 l6 offset-l3 ">
+                            <SearchInput exploreBy={this.props.search.exploreBy} />
+                        </div>
+                    </div>
                     <ResultsContainer history={this.props.history} />
                 </div>
             );

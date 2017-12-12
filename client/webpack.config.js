@@ -3,6 +3,13 @@ var webpack = require("webpack");
 var DotenvPlugin = require("webpack-dotenv-plugin");
 
 module.exports = {
+    devServer: {
+        contentBase: path.join(__dirname, "public"),
+        compress: true,
+        port: 80,
+        open: true,
+        historyApiFallback: true
+    },
     plugins: [
         new DotenvPlugin({
             sample: "./.env.default",

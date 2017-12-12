@@ -48,7 +48,7 @@ const SearchInputStyledDiv = styled.div`
         display: block;
         position: absolute;
         top: 51px;
-        width: 280px;
+        width: 100%;
         border: 1px solid #aaa;
         background-color: #fff;
         font-family: Helvetica, sans-serif;
@@ -218,7 +218,7 @@ class SearchInput extends Component {
     }
 
     renderSuggestion (suggestion) {
-        return <span>{suggestion[this.state.searchByValue]}</span>;
+        return <span className="l12 s12">{suggestion[this.state.searchByValue]}</span>;
     }
 
     render () {

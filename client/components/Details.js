@@ -10,7 +10,8 @@ class Details extends Component {
         this.state = {
             loading: true,
             storageString: this.props.search.exploreBy + this.props.search.id,
-            APIfromURL: null
+            APIfromURL: null,
+            possibleRelationships: ["characters", "comics", "creators", "events", "series", "stories"]
         };
         this.convertDetailsToJSX = this.convertDetailsToJSX.bind(this);
     }
@@ -18,6 +19,7 @@ class Details extends Component {
     componentWillMount () {
         // Load details from direct URL access
         if (this.props.match !== undefined) {
+            console.log("test");
             this.setState({ loading: true });
             marvelAPI.getDetails(this.props.match.params.entityType, this.props.match.params.id).then(res => {
                 this.setState({ loading: false, APIfromURL: res.data.data.results[0] });
@@ -26,11 +28,17 @@ class Details extends Component {
             // If relevant data has been stored already, load it otherwise request it from the API
             this.setState({ loading: false });
         } else {
-            marvelAPI.getDetails(this.props.search.exploreBy, this.props.search.id).then(res => {
-                // Cache result agaisnt identifiable name
-                this.props.cacheResults(this.state.storageString, res.data.data.results[0]);
-                this.setState({ loading: false });
-            });
+            marvelAPI
+                .getDetails(this.props.search.exploreBy, this.props.search.id)
+                .then(res => {
+                    // Cache result agaisnt identifiable name
+                    this.props.cacheResults(this.state.storageString, res.data.data.results[0]);
+                    this.setState({ loading: false });
+                })
+                .catch(error => {
+                    console.log(error);
+                    this.setState({ loading: false });
+                });
         }
     }
 
@@ -51,7 +59,8 @@ class Details extends Component {
                 console.log(source);
                 description = (
                     <div>
-                        <h3>Description: {source.description}</h3>
+                        <h3>Description</h3>
+                        <p className="flow-text">{source.description}</p>
                     </div>
                 );
             }
@@ -68,12 +77,24 @@ class Details extends Component {
                 );
             }
         }
+        console.log(source);
+        let stats = this.state.possibleRelationships.map(rel => {
+            if (source.hasOwnProperty(rel)) {
+                return (
+                    <div>
+                        {source[rel].hasOwnProperty("available") ? source[rel].available : 1} {rel}
+                    </div>
+                );
+            }
+        });
 
         return (
-            <div>
+            <div className="center-align">
                 <h1>{header}</h1>
-                <h1>{description}</h1>
-                <h3>{thumbnail}</h3>
+                {thumbnail}
+                {description}
+                <h3>Stats</h3>
+                {stats}
             </div>
         );
     }
@@ -87,7 +108,20 @@ class Details extends Component {
         }
         let html;
         if (this.state.loading === true) {
-            html = <h1> loading... </h1>;
+            html = (
+                <div
+                    className="App row valign-wrapper"
+                    style={{
+                        marginTop: "20%"
+                    }}
+                >
+                    <div className="col s6 offset-s3 center-align ">
+                        <div className="progress">
+                            <div className="indeterminate" />
+                        </div>
+                    </div>
+                </div>
+            );
         } else if (source === undefined) {
             html = <div />;
         } else if (source !== undefined) {

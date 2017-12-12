@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import cacheResults from "../redux/actions/cacheResultsAction";
 import { bindActionCreators } from "redux";
 import marvelAPI from "../api/marvelAPI";
+import { Link } from "react-router-dom";
+import Truncate from "react-truncate";
 
 class Results extends Component {
     constructor (props) {
@@ -26,8 +28,7 @@ class Results extends Component {
     componentWillMount () {
         // If relevant data has been stored already, load it otherwise request it from the API
         if (this.props.search.cachedResults.hasOwnProperty(this.state.storageString)) {
-            // TODO: google below line interation
-            this.state.loading = false;
+            this.setState({ loading: false });
         } else {
             marvelAPI
                 .getFilteredSearch(
@@ -46,83 +47,97 @@ class Results extends Component {
     }
 
     goToDetails (id) {
-        this.props.history.push("/" + this.props.filter + "/" + id);
+        this.props.history.push("/" + this.props.filter + "/" + id + "/");
     }
 
     convertResultToJSX (result) {
+        let header;
         switch (this.props.filter) {
             case "Characters":
-                return (
-                    <div key={result.id}>
-                        <h4>{result.name}</h4>
-                        <button onClick={this.goToDetails.bind(this, result.id)}>More Details</button>
-                    </div>
-                );
-                break;
-            case "Comics":
-                return (
-                    <div key={result.id}>
-                        <h4>{result.title}</h4>
-                        <button onClick={this.goToDetails.bind(this, result.id)}>More Details</button>
-                    </div>
-                );
+                header = result.name;
                 break;
             case "Creators":
-                return (
-                    <div key={result.id}>
-                        <h4>{result.firstName + " " + result.lastName}</h4>
-                        <button onClick={this.goToDetails.bind(this, result.id)}>More Details</button>
-                    </div>
-                );
+                header = result.firstName + " " + result.lastName;
                 break;
-            case "Events":
-                return (
-                    <div key={result.id}>
-                        <h4>{result.title}</h4>
-                        <button onClick={this.goToDetails.bind(this, result.id)}>More Details</button>
-                    </div>
-                );
-                break;
-            case "Series":
-                return (
-                    <div key={result.id}>
-                        <h4>{result.title}</h4>
-                        <button onClick={this.goToDetails.bind(this, result.id)}>More Details</button>
-                    </div>
-                );
-                break;
-            case "Stories":
-                return (
-                    <div key={result.id}>
-                        <h4>{result.title}</h4>
-                        <button onClick={this.goToDetails.bind(this, result.id)}>More Details</button>
-                    </div>
-                );
+            default:
+                header = result.title;
                 break;
         }
+        // TODO: check if mobile so both image sets dont load
+        return (
+            <li key={result.id} className="collection-item avatar row">
+                <img
+                    className="hide-on-large-only circle"
+                    src={
+                        result.hasOwnProperty("thumbnail") && result.thumbnail != null ?
+                            result.thumbnail.path + "/portrait_small." + result.thumbnail.extension :
+                            ""
+                    }
+                    alt={header + " thumbnail"}
+                />
+                <img
+                    className="hide-on-small-only col l2"
+                    src={
+                        result.hasOwnProperty("thumbnail") && result.thumbnail != null ?
+                            result.thumbnail.path + "/portrait_uncanny." + result.thumbnail.extension :
+                            ""
+                    }
+                    alt={header + " thumbnail"}
+                />
+                <span className="title hide-on-large-only ">
+                    <b>{header}</b>
+                </span>
+                <span className="title hide-on-small-only ">
+                    <h5>{header}</h5>
+                </span>
+                <p>
+                    <Truncate lines={2} ellipsis={<span>...</span>}>
+                        {result.hasOwnProperty("description") && result.description !== "" ?
+                            result.description :
+                            "No description."}
+                    </Truncate>
+                </p>
+                <Link to={"/" + this.props.filter + "/" + result.id}>More Details</Link>
+            </li>
+        );
     }
 
     render () {
         let source = this.props.search.cachedResults[this.state.storageString];
-        let results;
+        let html;
         if (this.state.loading === true) {
-            results = <h1> loading... </h1>;
+            html = (
+                <div
+                    className="App row valign-wrapper"
+                    style={{
+                        marginTop: "20%"
+                    }}
+                >
+                    <div className="col s6 offset-s3 center-align ">
+                        <div className="progress">
+                            <div className="indeterminate" />
+                        </div>
+                    </div>
+                </div>
+            );
         } else if (source === undefined) {
-            results = <div />;
+            html = <div />;
         } else if (source.length > 0) {
-            results = (
+            html = (
                 <div>
-                    <h2>Results</h2>
-                    {source.map(result => {
-                        return this.convertResultToJSX(result);
-                    })}
+                    <h3>Results</h3>
+                    <ul className="collection">
+                        {source.map(result => {
+                            return this.convertResultToJSX(result);
+                        })}
+                    </ul>
                 </div>
             );
         } else if (source.length === 0) {
-            results = <h2>No results for that.</h2>;
+            html = <h2>No results for that.</h2>;
         }
 
-        return <div>{results}</div>;
+        return <div>{html}</div>;
     }
 }
 

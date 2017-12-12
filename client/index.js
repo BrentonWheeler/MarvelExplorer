@@ -17,7 +17,7 @@ ReactDOM.render(
             <div>
                 <Switch>
                     <Route exact path="/" component={Search} />
-                    <Route exact path="/:entityType/:id" component={Details} />
+                    <Route exact path="/:entityType/:id/" component={Details} />
                 </Switch>
             </div>
         </Provider>

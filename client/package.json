@@ -25,6 +25,7 @@
         "react-router-redux": "^5.0.0-alpha.6",
         "react-scripts": "^1.0.14",
         "react-tabs": "^2.1.1",
+        "react-truncate": "^2.3.0",
         "redux": "^3.7.2",
         "redux-devtools-extension": "^2.13.2",
         "redux-thunk": "^2.2.0",
