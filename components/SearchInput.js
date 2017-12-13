@@ -56,7 +56,7 @@ const SearchInputStyledDiv = styled.div`
         font-size: 16px;
         border-bottom-left-radius: 4px;
         border-bottom-right-radius: 4px;
-        max-height: 33vh;
+        max-height: 50vh;
         overflow-y: auto;
         z-index: 2;
     }

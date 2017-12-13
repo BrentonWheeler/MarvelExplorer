@@ -14,10 +14,10 @@ module.exports = {
         new DotenvPlugin({
             sample: "./.env.default",
             path: "./.env"
-        }),
-        new webpack.SourceMapDevToolPlugin({
-            filename: "[file].map"
-        })
+        }) //,
+        // new webpack.SourceMapDevToolPlugin({
+        //     filename: "[file].map"
+        // })
     ],
     entry: "./index.js",
     output: {
