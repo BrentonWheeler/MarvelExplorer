@@ -19,7 +19,6 @@ class Details extends Component {
     componentWillMount () {
         // Load details from direct URL access
         if (this.props.match !== undefined) {
-            this.setState({ loading: true });
             marvelAPI.getDetails(this.props.match.params.entityType, this.props.match.params.id).then(res => {
                 this.setState({ loading: false, APIfromURL: res.data.data.results[0] });
             });

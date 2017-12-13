@@ -13082,7 +13082,6 @@ var Details = function (_Component) {
 
             // Load details from direct URL access
             if (this.props.match !== undefined) {
-                this.setState({ loading: true });
                 _marvelAPI2.default.getDetails(this.props.match.params.entityType, this.props.match.params.id).then(function (res) {
                     _this2.setState({ loading: false, APIfromURL: res.data.data.results[0] });
                 });
@@ -13100,10 +13099,6 @@ var Details = function (_Component) {
                 });
             }
         }
-
-        // componentDidUpdate () {
-        //     document.activeElement.scrollIntoView(true, { behavior: "smooth" });
-        // }
 
         // TODO: link back to marvel at bottom
 
@@ -27359,12 +27354,30 @@ var Search = function (_Component) {
                 return _react2.default.createElement(
                     "div",
                     { className: "container" },
+                    _react2.default.createElement(
+                        "div",
+                        { className: "center-align" },
+                        _react2.default.createElement(
+                            "a",
+                            { href: "https://marvel.com/" },
+                            "Data provided by Marvel. \xA9 2014 Marvel"
+                        )
+                    ),
                     _react2.default.createElement(_ExploreBy2.default, null)
                 );
             } else if (this.props.search.id === null) {
                 return _react2.default.createElement(
                     "div",
                     { className: "container" },
+                    _react2.default.createElement(
+                        "div",
+                        { className: "center-align" },
+                        _react2.default.createElement(
+                            "a",
+                            { href: "https://marvel.com/" },
+                            "Data provided by Marvel. \xA9 2014 Marvel"
+                        )
+                    ),
                     _react2.default.createElement(_ExploreBy2.default, null),
                     _react2.default.createElement(
                         "div",
@@ -27380,6 +27393,15 @@ var Search = function (_Component) {
                 return _react2.default.createElement(
                     "div",
                     { className: "container" },
+                    _react2.default.createElement(
+                        "div",
+                        { className: "center-align" },
+                        _react2.default.createElement(
+                            "a",
+                            { href: "https://marvel.com/" },
+                            "Data provided by Marvel. \xA9 2014 Marvel"
+                        )
+                    ),
                     _react2.default.createElement(_ExploreBy2.default, null),
                     _react2.default.createElement(
                         "div",
@@ -27430,7 +27452,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _templateObject = _taggedTemplateLiteral(["\n    body {\n        font-family: Helvetica, sans-serif;\n    }\n\n    .react-autosuggest__container {\n        position: relative;\n    }\n\n    .react-autosuggest__input {\n        width: 240px;\n        height: 30px;\n        padding: 10px 20px;\n        font-family: Helvetica, sans-serif;\n        font-weight: 300;\n        font-size: 16px;\n        border: 1px solid #aaa;\n        border-radius: 4px;\n    }\n\n    .react-autosuggest__input--focused {\n        outline: none;\n    }\n\n    .react-autosuggest__input--open {\n        border-bottom-left-radius: 0;\n        border-bottom-right-radius: 0;\n    }\n\n    .react-autosuggest__suggestions-container {\n        display: none;\n    }\n\n    .react-autosuggest__suggestions-container--open {\n        display: block;\n        position: absolute;\n        top: 51px;\n        width: 100%;\n        border: 1px solid #aaa;\n        background-color: #fff;\n        font-family: Helvetica, sans-serif;\n        font-weight: 300;\n        font-size: 16px;\n        border-bottom-left-radius: 4px;\n        border-bottom-right-radius: 4px;\n        z-index: 2;\n    }\n\n    .react-autosuggest__suggestions-list {\n        margin: 0;\n        padding: 0;\n        list-style-type: none;\n    }\n\n    .react-autosuggest__suggestion {\n        cursor: pointer;\n        padding: 10px 20px;\n    }\n\n    .react-autosuggest__suggestion--highlighted {\n        background-color: #ddd;\n    }\n"], ["\n    body {\n        font-family: Helvetica, sans-serif;\n    }\n\n    .react-autosuggest__container {\n        position: relative;\n    }\n\n    .react-autosuggest__input {\n        width: 240px;\n        height: 30px;\n        padding: 10px 20px;\n        font-family: Helvetica, sans-serif;\n        font-weight: 300;\n        font-size: 16px;\n        border: 1px solid #aaa;\n        border-radius: 4px;\n    }\n\n    .react-autosuggest__input--focused {\n        outline: none;\n    }\n\n    .react-autosuggest__input--open {\n        border-bottom-left-radius: 0;\n        border-bottom-right-radius: 0;\n    }\n\n    .react-autosuggest__suggestions-container {\n        display: none;\n    }\n\n    .react-autosuggest__suggestions-container--open {\n        display: block;\n        position: absolute;\n        top: 51px;\n        width: 100%;\n        border: 1px solid #aaa;\n        background-color: #fff;\n        font-family: Helvetica, sans-serif;\n        font-weight: 300;\n        font-size: 16px;\n        border-bottom-left-radius: 4px;\n        border-bottom-right-radius: 4px;\n        z-index: 2;\n    }\n\n    .react-autosuggest__suggestions-list {\n        margin: 0;\n        padding: 0;\n        list-style-type: none;\n    }\n\n    .react-autosuggest__suggestion {\n        cursor: pointer;\n        padding: 10px 20px;\n    }\n\n    .react-autosuggest__suggestion--highlighted {\n        background-color: #ddd;\n    }\n"]);
+var _templateObject = _taggedTemplateLiteral(["\n    body {\n        font-family: Helvetica, sans-serif;\n    }\n\n    .react-autosuggest__container {\n        position: relative;\n    }\n\n    .react-autosuggest__input {\n        width: 240px;\n        height: 30px;\n        padding: 10px 20px;\n        font-family: Helvetica, sans-serif;\n        font-weight: 300;\n        font-size: 16px;\n        border: 1px solid #aaa;\n        border-radius: 4px;\n    }\n\n    .react-autosuggest__input--focused {\n        outline: none;\n    }\n\n    .react-autosuggest__input--open {\n        border-bottom-left-radius: 0;\n        border-bottom-right-radius: 0;\n    }\n\n    .react-autosuggest__suggestions-container {\n        display: none;\n    }\n\n    .react-autosuggest__suggestions-container--open {\n        display: block;\n        position: absolute;\n        top: 51px;\n        width: 100%;\n        border: 1px solid #aaa;\n        background-color: #fff;\n        font-family: Helvetica, sans-serif;\n        font-weight: 300;\n        font-size: 16px;\n        border-bottom-left-radius: 4px;\n        border-bottom-right-radius: 4px;\n        max-height: 33vh;\n        overflow-y: auto;\n        z-index: 2;\n    }\n\n    .react-autosuggest__suggestions-list {\n        margin: 0;\n        padding: 0;\n        list-style-type: none;\n    }\n\n    .react-autosuggest__suggestion {\n        cursor: pointer;\n        padding: 10px 20px;\n    }\n\n    .react-autosuggest__suggestion--highlighted {\n        background-color: #ddd;\n    }\n"], ["\n    body {\n        font-family: Helvetica, sans-serif;\n    }\n\n    .react-autosuggest__container {\n        position: relative;\n    }\n\n    .react-autosuggest__input {\n        width: 240px;\n        height: 30px;\n        padding: 10px 20px;\n        font-family: Helvetica, sans-serif;\n        font-weight: 300;\n        font-size: 16px;\n        border: 1px solid #aaa;\n        border-radius: 4px;\n    }\n\n    .react-autosuggest__input--focused {\n        outline: none;\n    }\n\n    .react-autosuggest__input--open {\n        border-bottom-left-radius: 0;\n        border-bottom-right-radius: 0;\n    }\n\n    .react-autosuggest__suggestions-container {\n        display: none;\n    }\n\n    .react-autosuggest__suggestions-container--open {\n        display: block;\n        position: absolute;\n        top: 51px;\n        width: 100%;\n        border: 1px solid #aaa;\n        background-color: #fff;\n        font-family: Helvetica, sans-serif;\n        font-weight: 300;\n        font-size: 16px;\n        border-bottom-left-radius: 4px;\n        border-bottom-right-radius: 4px;\n        max-height: 33vh;\n        overflow-y: auto;\n        z-index: 2;\n    }\n\n    .react-autosuggest__suggestions-list {\n        margin: 0;\n        padding: 0;\n        list-style-type: none;\n    }\n\n    .react-autosuggest__suggestion {\n        cursor: pointer;\n        padding: 10px 20px;\n    }\n\n    .react-autosuggest__suggestion--highlighted {\n        background-color: #ddd;\n    }\n"]);
 
 var _react = __webpack_require__(2);
 
@@ -27500,7 +27522,9 @@ var SearchInput = function (_Component) {
             value: "",
             entityArray: [],
             cancelPreviousRequest: null,
-            delayedSearch: null
+            delayedSearch: null,
+            loading: false,
+            noSuggestions: false
         };
 
         if (_this.props.exploreBy === "Characters") {
@@ -27518,7 +27542,6 @@ var SearchInput = function (_Component) {
         _this.renderSuggestion = _this.renderSuggestion.bind(_this);
         _this.searchAPIForSuggestions = _this.searchAPIForSuggestions.bind(_this);
         _this.checkForMatch = _this.checkForMatch.bind(_this);
-        _this.onFocus = _this.onFocus.bind(_this);
         return _this;
     }
 
@@ -27542,6 +27565,7 @@ var SearchInput = function (_Component) {
             this.props.updateSearchID(null);
             for (var i = 0; i < this.props.search[this.props.search.exploreBy].length; i++) {
                 if (this.props.search[this.props.search.exploreBy][i][this.state.searchByValue].toLowerCase() === this.props.search.inputValue.toLowerCase()) {
+                    // TODO: think about adding a loading control here for details api request
                     this.props.updateSearchID(this.props.search[this.props.search.exploreBy][i].id);
                 }
             }
@@ -27556,17 +27580,21 @@ var SearchInput = function (_Component) {
         value: function getSuggestions(value) {
             var _this2 = this;
 
-            var escapedValue = this.escapeRegexCharacters(value.trim());
+            if (this.state.loading) {
+                return [_defineProperty({}, this.state.searchByValue, "loading...")];
+            } else {
+                var escapedValue = this.escapeRegexCharacters(value.trim());
 
-            if (escapedValue === "") {
-                return [];
+                if (escapedValue === "") {
+                    return [];
+                }
+
+                var regex = new RegExp("^" + escapedValue, "i");
+
+                return this.state.entityArray.filter(function (entity) {
+                    return regex.test(entity[_this2.state.searchByValue]);
+                });
             }
-
-            var regex = new RegExp("^" + escapedValue, "i");
-
-            return this.state.entityArray.filter(function (entity) {
-                return regex.test(entity[_this2.state.searchByValue]);
-            });
         }
     }, {
         key: "getSuggestionValue",
@@ -27575,8 +27603,8 @@ var SearchInput = function (_Component) {
         }
     }, {
         key: "onSuggestionsFetchRequested",
-        value: function onSuggestionsFetchRequested(_ref) {
-            var value = _ref.value;
+        value: function onSuggestionsFetchRequested(_ref2) {
+            var value = _ref2.value;
 
             this.setState({
                 suggestions: this.getSuggestions(value)
@@ -27590,17 +27618,11 @@ var SearchInput = function (_Component) {
             });
         }
     }, {
-        key: "onFocus",
-        value: function onFocus(event, test) {
-            //console.log(event);
-            //document.activeElement.scrollIntoView(true);
-        }
-    }, {
         key: "onChange",
-        value: function onChange(event, _ref2) {
+        value: function onChange(event, _ref3) {
             var _this3 = this;
 
-            var newValue = _ref2.newValue;
+            var newValue = _ref3.newValue;
 
             // Checking that the user did not just click a suggestion which would change capitalization
             if (this.props.search.inputValue.toLowerCase() !== newValue.toLowerCase()) {
@@ -27640,17 +27662,34 @@ var SearchInput = function (_Component) {
                     this.checkForMatch(newValue);
                     // Else load from API
                 } else {
+                    this.setState({ loading: true });
+                    this.onSuggestionsFetchRequested({ value: newValue });
                     var tempRequest = _marvelAPI2.default.getEntityStartingWith(exploreBy, newValue);
                     tempRequest.get.then(function (res) {
+                        // Only storing relevant information about results to reduce storage size
                         var optimizedArray = res.data.data.results.map(function (dataItem) {
-                            var _ref3;
+                            var _ref4;
 
-                            return _ref3 = {}, _defineProperty(_ref3, _this4.state.searchByValue, dataItem[_this4.state.searchByValue]), _defineProperty(_ref3, "id", dataItem.id), _ref3;
+                            return _ref4 = {}, _defineProperty(_ref4, _this4.state.searchByValue, dataItem[_this4.state.searchByValue]), _defineProperty(_ref4, "id", dataItem.id), _ref4;
                         });
+
+                        // Checks if there are no suggestions for that search, if so display that fact to the user
+                        if (optimizedArray.length === 0) {
+                            _this4.setState({
+                                noSuggestions: true
+                            });
+                        } else {
+                            _this4.setState({
+                                noSuggestions: false
+                            });
+                        }
+
                         _this4.setState({ entityArray: optimizedArray });
+                        _this4.setState({ loading: false });
+
                         _this4.onSuggestionsFetchRequested({ value: newValue });
                         _this4.props.updateSuggestedItems(exploreBy, optimizedArray, [_this4.props.search.exploreBy + newValue]);
-                        //console.log(document.activeElement);
+                        // Shows suggestions that might be hidden under keyboard for mobile
                         document.activeElement.scrollIntoView({
                             behaviour: "smooth",
                             block: "start",
@@ -27670,11 +27709,54 @@ var SearchInput = function (_Component) {
     }, {
         key: "renderSuggestion",
         value: function renderSuggestion(suggestion) {
-            return _react2.default.createElement(
-                "span",
-                { className: "l12 s12" },
-                suggestion[this.state.searchByValue]
-            );
+            if (this.state.loading) {
+                return _react2.default.createElement(
+                    "span",
+                    { className: "l12 s12" },
+                    _react2.default.createElement(
+                        "div",
+                        {
+                            className: "row valign-wrapper",
+                            style: {
+                                marginTop: "10%"
+                            }
+                        },
+                        _react2.default.createElement(
+                            "div",
+                            { className: "col s6 offset-s3 center-align " },
+                            _react2.default.createElement(
+                                "div",
+                                { className: "preloader-wrapper small active" },
+                                _react2.default.createElement(
+                                    "div",
+                                    { className: "spinner-layer spinner-red-only" },
+                                    _react2.default.createElement(
+                                        "div",
+                                        { className: "circle-clipper left" },
+                                        _react2.default.createElement("div", { className: "circle" })
+                                    ),
+                                    _react2.default.createElement(
+                                        "div",
+                                        { className: "gap-patch" },
+                                        _react2.default.createElement("div", { className: "circle" })
+                                    ),
+                                    _react2.default.createElement(
+                                        "div",
+                                        { className: "circle-clipper right" },
+                                        _react2.default.createElement("div", { className: "circle" })
+                                    )
+                                )
+                            )
+                        )
+                    )
+                );
+            } else {
+                return _react2.default.createElement(
+                    "span",
+                    { className: "l12 s12" },
+                    suggestion[this.state.searchByValue]
+                );
+            }
         }
     }, {
         key: "render",
@@ -27686,22 +27768,30 @@ var SearchInput = function (_Component) {
             var inputProps = {
                 placeholder: "Search " + this.props.exploreBy,
                 value: value,
-                onChange: this.onChange,
-                onFocus: this.onFocus
+                onChange: this.onChange
             };
 
             return _react2.default.createElement(
-                SearchInputStyledDiv,
-                { className: "row center-align" },
-                _react2.default.createElement(_reactAutosuggest2.default, {
-                    focusInputOnSuggestionClick: false,
-                    suggestions: suggestions,
-                    onSuggestionsFetchRequested: this.onSuggestionsFetchRequested,
-                    onSuggestionsClearRequested: this.onSuggestionsClearRequested,
-                    getSuggestionValue: this.getSuggestionValue,
-                    renderSuggestion: this.renderSuggestion,
-                    inputProps: inputProps
-                })
+                "div",
+                null,
+                _react2.default.createElement(
+                    SearchInputStyledDiv,
+                    { className: "row center-align" },
+                    _react2.default.createElement(_reactAutosuggest2.default, {
+                        focusInputOnSuggestionClick: false,
+                        suggestions: suggestions,
+                        onSuggestionsFetchRequested: this.onSuggestionsFetchRequested,
+                        onSuggestionsClearRequested: this.onSuggestionsClearRequested,
+                        getSuggestionValue: this.getSuggestionValue,
+                        renderSuggestion: this.renderSuggestion,
+                        inputProps: inputProps
+                    })
+                ),
+                this.state.noSuggestions && _react2.default.createElement(
+                    "div",
+                    { className: "no-suggestions" },
+                    "No suggestions"
+                )
             );
         }
     }]);

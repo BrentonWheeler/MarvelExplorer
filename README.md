@@ -1,6 +1,6 @@
 # Marvel Front End Test For Rex Software
 
-Accessible at: http://faithful-theory.surge.sh/
+Accessible at: http://marvel-explorer.surge.sh/
 
 ## Setup
 

@@ -128,6 +128,7 @@ class SearchInput extends Component {
                 this.props.search[this.props.search.exploreBy][i][this.state.searchByValue].toLowerCase() ===
                 this.props.search.inputValue.toLowerCase()
             ) {
+                // TODO: think about adding a loading control here for details api request
                 this.props.updateSearchID(this.props.search[this.props.search.exploreBy][i].id);
             }
         }

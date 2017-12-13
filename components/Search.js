@@ -17,12 +17,18 @@ class Search extends Component {
         if (this.props.search.exploreBy === null) {
             return (
                 <div className="container">
+                    <div className="center-align">
+                        <a href="https://marvel.com/">Data provided by Marvel. © 2014 Marvel</a>
+                    </div>
                     <ExploreBy />
                 </div>
             );
         } else if (this.props.search.id === null) {
             return (
                 <div className="container">
+                    <div className="center-align">
+                        <a href="https://marvel.com/">Data provided by Marvel. © 2014 Marvel</a>
+                    </div>
                     <ExploreBy />
                     <div className="row">
                         <div className="col s10 offset-s1 l4 offset-l4">
@@ -34,6 +40,9 @@ class Search extends Component {
         } else {
             return (
                 <div className="container">
+                    <div className="center-align">
+                        <a href="https://marvel.com/">Data provided by Marvel. © 2014 Marvel</a>
+                    </div>
                     <ExploreBy />
                     <div className="row">
                         <div className="col s10 offset-s1 l4 offset-l4 ">
