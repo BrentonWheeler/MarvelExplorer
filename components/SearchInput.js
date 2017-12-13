@@ -87,7 +87,8 @@ class SearchInput extends Component {
             entityArray: [],
             cancelPreviousRequest: null,
             delayedSearch: null,
-            loading: false
+            loading: false,
+            noSuggestions: false
         };
 
         if (this.props.exploreBy === "Characters") {
@@ -209,11 +210,25 @@ class SearchInput extends Component {
                 let tempRequest = marvelAPI.getEntityStartingWith(exploreBy, newValue);
                 tempRequest.get
                     .then(res => {
+                        // Only storing relevant information about results to reduce storage size
                         let optimizedArray = res.data.data.results.map(dataItem => {
                             return { [this.state.searchByValue]: dataItem[this.state.searchByValue], id: dataItem.id };
                         });
+
+                        // Checks if there are no suggestions for that search, if so display that fact to the user
+                        if (optimizedArray.length === 0) {
+                            this.setState({
+                                noSuggestions: true
+                            });
+                        } else {
+                            this.setState({
+                                noSuggestions: false
+                            });
+                        }
+
                         this.setState({ entityArray: optimizedArray });
                         this.setState({ loading: false });
+
                         this.onSuggestionsFetchRequested({ value: newValue });
                         this.props.updateSuggestedItems(exploreBy, optimizedArray, [
                             this.props.search.exploreBy + newValue
@@ -281,17 +296,20 @@ class SearchInput extends Component {
         };
 
         return (
-            <SearchInputStyledDiv className="row center-align">
-                <Autosuggest
-                    focusInputOnSuggestionClick={false}
-                    suggestions={suggestions}
-                    onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                    onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                    getSuggestionValue={this.getSuggestionValue}
-                    renderSuggestion={this.renderSuggestion}
-                    inputProps={inputProps}
-                />
-            </SearchInputStyledDiv>
+            <div>
+                <SearchInputStyledDiv className="row center-align">
+                    <Autosuggest
+                        focusInputOnSuggestionClick={false}
+                        suggestions={suggestions}
+                        onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                        onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                        getSuggestionValue={this.getSuggestionValue}
+                        renderSuggestion={this.renderSuggestion}
+                        inputProps={inputProps}
+                    />
+                </SearchInputStyledDiv>
+                {this.state.noSuggestions && <div className="no-suggestions">No suggestions</div>}
+            </div>
         );
     }
 }
