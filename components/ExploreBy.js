@@ -33,12 +33,12 @@ class ExploreBy extends Component {
         return (
             <div className="center-align ">
                 <h1>Explore By</h1>
-                <div className="row ">
-                    <div className="row col s12 offset-l2">
+                <div className="row center-align ">
+                    <div className="row col s12 ">
                         {this.state.entities.map((entity, i) => {
                             return (
                                 <button
-                                    className="waves-effect waves-light btn-large col s6 l2"
+                                    className="waves-effect waves-light btn-large col s6 l3"
                                     disabled={this.props.search.exploreBy === entity.type}
                                     onClick={this.searchBy.bind(this, entity.type)}
                                     key={i}

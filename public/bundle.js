@@ -39485,15 +39485,15 @@ var ExploreBy = function (_Component) {
                 ),
                 _react2.default.createElement(
                     "div",
-                    { className: "row " },
+                    { className: "row center-align " },
                     _react2.default.createElement(
                         "div",
-                        { className: "row col s12 offset-l2" },
+                        { className: "row col s12 " },
                         this.state.entities.map(function (entity, i) {
                             return _react2.default.createElement(
                                 "button",
                                 {
-                                    className: "waves-effect waves-light btn-large col s6 l2",
+                                    className: "waves-effect waves-light btn-large col s6 l3",
                                     disabled: _this2.props.search.exploreBy === entity.type,
                                     onClick: _this2.searchBy.bind(_this2, entity.type),
                                     key: i
